@@ -15,16 +15,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Job 1: ensamblar y habilitar Pages (sin binding de environment,
+  # para evitar el startup failure cuando Pages aún no está activado).
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure Pages
+      - name: Configure Pages (auto-enable)
         uses: actions/configure-pages@v5
         with:
           enablement: true
@@ -33,13 +32,22 @@ jobs:
         run: |
           mkdir -p _site
           cp -r index.html css js fonts vendor assets .nojekyll _site/
-          ls -R _site | head -40
+          echo "---- _site ----"
+          ls -R _site | head -50
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_site"
+          path: _site
 
-      - name: Deploy
+  # Job 2: desplegar. Para cuando arranca, Pages ya está habilitado.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
