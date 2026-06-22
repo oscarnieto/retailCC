@@ -50,9 +50,10 @@ export const content = {
     place: "BERANGO · ESPAÑA", // Montserrat medium · amarillo
     subtitle:
       "Dominant retail park in Greater Bilbao’s northern corridor with 100% occupancy and resilient income.",
-    // Imagen de fondo del hero (cuadro rojo). Vacío => fondo WebGL animado.
+    // Foto de fondo del hero. Sube el archivo a assets/hero.jpg (minúsculas).
+    // Si aún no existe, se muestra un fondo oscuro de respaldo.
     media: {
-      src: "",
+      src: "assets/hero.jpg",
       alt: "Vista aérea de Parque Comercial Berango",
     },
     scrollHint: "Scroll",

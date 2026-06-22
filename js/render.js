@@ -31,7 +31,9 @@ export function logoMarkup(variant = "yellow", title = "savills") {
 function mediaSlot(media = {}, { className = "", editPath = "" } = {}) {
   const hasImg = media.src && media.src.trim() !== "";
   const inner = hasImg
-    ? `<img class="media__img" src="${esc(media.src)}" alt="${esc(media.alt || "")}" loading="lazy" />`
+    ? `<img class="media__img" src="${esc(media.src)}" alt="${esc(
+        media.alt || ""
+      )}" loading="lazy" onerror="this.style.display='none'" />`
     : `<div class="media__ph"><span>${esc(media.alt || "")}</span></div>`;
   return `<figure class="media ${className}" ${
     editPath ? `data-edit="${editPath}"` : ""
@@ -59,7 +61,7 @@ function hero(c) {
     h.media && h.media.src
       ? `<img class="hero__media" src="${esc(h.media.src)}" alt="${esc(
           h.media.alt || ""
-        )}" data-edit="hero.media" />`
+        )}" data-edit="hero.media" onerror="this.style.display='none'" />`
       : `<div class="hero__media" data-edit="hero.media" hidden></div>`;
   return `
   <section class="hero" id="top">
