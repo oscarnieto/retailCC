@@ -40,6 +40,18 @@ function mediaSlot(media = {}, { className = "", editPath = "" } = {}) {
   }>${inner}</figure>`;
 }
 
+/** Mapa de Google embebido (sin API key) a partir de una dirección. */
+function mapEmbed(map = {}, { className = "", editPath = "" } = {}) {
+  const q = encodeURIComponent(map.address);
+  return `<figure class="media ${className}" ${
+    editPath ? `data-edit="${editPath}"` : ""
+  }>
+    <iframe class="media__map" title="${esc(map.alt || "Mapa")}" loading="lazy"
+      src="https://www.google.com/maps?q=${q}&output=embed"
+      referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+  </figure>`;
+}
+
 /* ------------------------------- sections ------------------------------- */
 function header(c) {
   return `
@@ -87,7 +99,11 @@ function location(c) {
       <p class="location__text" data-reveal data-edit="location.richText">${rich(
         l.richText
       )}</p>
-      ${mediaSlot(l.map, { className: "location__map", editPath: "location.map" })}
+      ${
+        l.map.address
+          ? mapEmbed(l.map, { className: "location__map", editPath: "location.map" })
+          : mediaSlot(l.map, { className: "location__map", editPath: "location.map" })
+      }
     </div>
   </section>`;
 }

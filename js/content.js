@@ -79,7 +79,10 @@ export const content = {
       },
     ],
     map: {
-      src: "", // hueco para el mapa / Google Maps (cuadro rojo)
+      // Si `address` tiene valor, se muestra un mapa de Google embebido.
+      // Si lo dejas vacío y pones `src`, se mostraría una imagen.
+      address: "Paseo de la Castellana 81, Madrid",
+      src: "",
       alt: "Mapa de Parque Comercial Berango, Greater Bilbao",
       caption: "Berango · Bizkaia · Greater Bilbao",
     },
