@@ -64,12 +64,12 @@ export const content = {
     richText: [
       { text: "Parque Comercial Berango is the " },
       {
-        text: "dominant retail park in the northern area of Greater Bilbao",
+        text: "dominant retail park in the northern area of Greater Bilbao.",
         bold: true,
       },
       {
         text:
-          ". Anchored by leading brands, the asset benefits from strong critical mass in its immediate surroundings and serves a catchment of c.150,000 residents. The location sits within a ",
+          " Anchored by leading brands, the asset benefits from strong critical mass in its immediate surroundings and serves a catchment of c.150,000 residents. The location sits within a ",
       },
       { text: "highly affluent area", bold: true },
       {
@@ -88,14 +88,14 @@ export const content = {
   assetOverview: {
     label: "Asset Overview",
     stats: [
-      { value: "2017", suffix: "", caption: "Opening date" },
-      { value: "5,000", suffix: "sqm", caption: "GLA" },
-      { value: "100", suffix: "%", caption: "Occupancy rate" },
-      { value: "148", suffix: "", caption: "Parking spaces (outdoor/indoor)" },
-      { value: "€11.78", suffix: "/sqm/month", caption: "Average rent" },
-      { value: "€655,000", suffix: "", caption: "Approximate NOI" },
-      { value: "100", suffix: "%", caption: "Ownership" },
-      { value: "100", suffix: "%", caption: "Ownership" },
+      { value: "2017", caption: "Opening date" },
+      { value: "5,000sqm", caption: "GLA" },
+      { value: "100%", caption: "Occupancy rate" },
+      { value: "148", caption: "Parking spaces (outdoor/indoor)" },
+      { value: "€11.78", unit: "/sqm/month", caption: "Average rent" },
+      { value: "€655,000", caption: "Approximate NOI" },
+      { value: "100%", caption: "Ownership" },
+      { value: "100%", caption: "Ownership" },
     ],
   },
 
@@ -131,7 +131,6 @@ export const content = {
       { name: "The Food Co.", logo: "" },
       { name: "C&A", logo: "" },
       { name: "Kiabi", logo: "" },
-      { name: "+ more", logo: "" },
     ],
   },
 

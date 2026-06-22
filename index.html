@@ -12,7 +12,6 @@
     <meta name="theme-color" content="#111111" />
     <meta name="color-scheme" content="light" />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Parque Comercial Berango — Retail Investment Opportunity" />
     <meta
@@ -20,17 +19,14 @@
       content="Dominant retail park in Greater Bilbao’s northern corridor with 100% occupancy and resilient income."
     />
 
-    <!-- Favicon -->
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 
-    <!-- Preload critical fonts -->
     <link rel="preload" href="fonts/montserrat-600.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="fonts/playfair-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="fonts/playfair-400-italic.woff2" as="font" type="font/woff2" crossorigin />
 
     <link rel="stylesheet" href="css/styles.css" />
 
-    <!-- swap no-js -> js as early as possible -->
     <script>
       (function () {
         var r = document.documentElement;
@@ -41,33 +37,10 @@
         }
       })();
     </script>
-
-    <!-- Three.js as ES module via import map (self-hosted, no CDN) -->
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "./vendor/three.module.min.js"
-        }
-      }
-    </script>
   </head>
 
   <body>
     <a class="skip" href="#top">Skip to content</a>
-    <div class="grain" aria-hidden="true"></div>
-
-    <!-- Custom cursor -->
-    <div class="cursor" aria-hidden="true"><div class="cursor__dot"></div></div>
-    <div class="cursor__ring" aria-hidden="true"></div>
-
-    <!-- Loader -->
-    <div class="loader" id="loader" aria-hidden="true">
-      <div class="loader__inner">
-        <div class="loader__logo" id="loader-logo"></div>
-        <div class="loader__count"><span id="loader-count">0</span></div>
-        <div class="loader__bar"><i id="loader-bar"></i></div>
-      </div>
-    </div>
 
     <!-- App root: renderizado desde js/content.js a través de js/render.js -->
     <div id="app"></div>
@@ -83,7 +56,7 @@
       </div>
     </noscript>
 
-    <!-- Libs (UMD globals): GSAP, ScrollTrigger, Lenis -->
+    <!-- Motion sutil: GSAP + ScrollTrigger + Lenis (UMD globals) -->
     <script defer src="vendor/gsap.min.js"></script>
     <script defer src="vendor/ScrollTrigger.min.js"></script>
     <script defer src="vendor/lenis.min.js"></script>
