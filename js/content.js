@@ -109,11 +109,14 @@ export const content = {
     columns: [
       {
         label: "MGR by tenant",
-        media: { src: "", alt: "MGR by tenant — gráfica" },
+        // Pega aquí la URL del iframe del gráfico (Looker, Power BI, Sheets…).
+        embed: "",
+        media: { src: "", alt: "MGR by tenant — iframe" },
       },
       {
         label: "Comparison of socio-economic indicators",
-        media: { src: "", alt: "Comparison of socio-economic indicators — gráfica" },
+        embed: "",
+        media: { src: "", alt: "Comparison of socio-economic indicators — iframe" },
       },
     ],
   },

@@ -40,17 +40,19 @@ function mediaSlot(media = {}, { className = "", editPath = "" } = {}) {
   }>${inner}</figure>`;
 }
 
-/** Mapa de Google embebido (sin API key) a partir de una dirección. */
-function mapEmbed(map = {}, { className = "", editPath = "" } = {}) {
-  const q = encodeURIComponent(map.address);
+/** Slot de iframe genérico (mapa de Google, gráficas embebidas, dashboards…). */
+function iframeSlot(src, { title = "", className = "", editPath = "" } = {}) {
   return `<figure class="media ${className}" ${
     editPath ? `data-edit="${editPath}"` : ""
   }>
-    <iframe class="media__map" title="${esc(map.alt || "Mapa")}" loading="lazy"
-      src="https://www.google.com/maps?q=${q}&output=embed"
+    <iframe title="${esc(title)}" loading="lazy" src="${esc(src)}"
       referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
   </figure>`;
 }
+
+/** URL de embed de Google Maps (sin API key) a partir de una dirección. */
+const mapsEmbedUrl = (address) =>
+  `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
 
 /* ------------------------------- sections ------------------------------- */
 function header(c) {
@@ -101,7 +103,11 @@ function location(c) {
       )}</p>
       ${
         l.map.address
-          ? mapEmbed(l.map, { className: "location__map", editPath: "location.map" })
+          ? iframeSlot(mapsEmbedUrl(l.map.address), {
+              title: l.map.alt || "Mapa",
+              className: "location__map",
+              editPath: "location.map",
+            })
           : mediaSlot(l.map, { className: "location__map", editPath: "location.map" })
       }
     </div>
@@ -136,18 +142,25 @@ function overview(c) {
 
 function insights(c) {
   const cols = c.insights.columns
-    .map(
-      (col, i) => `
+    .map((col, i) => {
+      const slot = col.embed
+        ? iframeSlot(col.embed, {
+            title: col.label,
+            className: "insight__media",
+            editPath: `insights.columns.${i}.embed`,
+          })
+        : mediaSlot(col.media, {
+            className: "insight__media",
+            editPath: `insights.columns.${i}.media`,
+          });
+      return `
       <div class="insight" data-reveal>
         <span class="label insight__label" data-edit="insights.columns.${i}.label">${esc(
         col.label
       )}</span>
-        ${mediaSlot(col.media, {
-          className: "insight__media",
-          editPath: `insights.columns.${i}.media`,
-        })}
-      </div>`
-    )
+        ${slot}
+      </div>`;
+    })
     .join("");
   return `
   <section class="section insights" id="insights">
