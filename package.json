@@ -1,0 +1,20 @@
+{
+  "name": "retailcc-berango",
+  "version": "1.0.0",
+  "description": "Awwwards-worthy retail investment landing page (Parque Comercial Berango / Savills). Data-driven, GSAP + Three.js.",
+  "type": "module",
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "start": "python3 -m http.server 4321",
+    "dev": "python3 -m http.server 4321"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@fontsource/montserrat": "^5.0.0",
+    "@fontsource/playfair-display": "^5.0.0",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.0",
+    "three": "^0.160.0"
+  }
+}
