@@ -164,6 +164,10 @@ function mdToSegments(str = "") {
 let current = null; // página en edición
 let previewFrame = null;
 let previewDoc = null;
+let previewStage = null;
+let previewMode = "desktop";
+let previewRO = null;
+const PREVIEW_W = { desktop: 1280, mobile: 390 }; // ancho lógico de la vista previa
 let saveStateEl = null;
 let prevTimer = null;
 let saveTimer = null;
@@ -475,6 +479,7 @@ function initPreview(iframe) {
     doc.close();
     previewDoc = doc;
     refreshPreview();
+    applyPreviewSize();
     return true;
   };
   // El documento (about:blank) de un iframe ya insertado suele estar disponible
@@ -495,6 +500,24 @@ function refreshPreview() {
       (e && e.message) +
       "</p>";
   }
+}
+
+/** Renderiza la preview a un ancho lógico (1280 escritorio / 390 móvil) y la
+ *  escala para encajar en el panel, de modo que muestre el layout REAL. */
+function applyPreviewSize() {
+  const iframe = previewFrame;
+  const stage = previewStage;
+  if (!iframe || !stage) return;
+  const avail = stage.clientWidth;
+  const availH = stage.clientHeight;
+  if (!avail || !availH) return;
+  const logical = PREVIEW_W[previewMode] || 1280;
+  const scale = Math.min(1, avail / logical);
+  const tx = Math.max(0, (avail - logical * scale) / 2); // centrar (sobre todo en móvil)
+  iframe.style.width = logical + "px";
+  iframe.style.height = availH / scale + "px";
+  iframe.style.transformOrigin = "top left";
+  iframe.style.transform = "translateX(" + tx + "px) scale(" + scale + ")";
 }
 
 /* =============================== vistas ================================= */
@@ -596,11 +619,12 @@ function renderDashboard() {
   root().replaceChildren(top, h("main", { class: "dash" }, h("h1", {}, "Páginas"), grid, help));
 }
 
-function deviceButtons(stage) {
+function deviceButtons() {
   const d = h("button", { class: "chip chip--on", type: "button" }, "Escritorio");
   const m = h("button", { class: "chip", type: "button" }, "Móvil");
-  d.onclick = () => { stage.style.maxWidth = ""; d.classList.add("chip--on"); m.classList.remove("chip--on"); };
-  m.onclick = () => { stage.style.maxWidth = "390px"; m.classList.add("chip--on"); d.classList.remove("chip--on"); };
+  const pick = (mode, on, off) => { previewMode = mode; on.classList.add("chip--on"); off.classList.remove("chip--on"); applyPreviewSize(); };
+  d.onclick = () => pick("desktop", d, m);
+  m.onclick = () => pick("mobile", m, d);
   return h("div", { class: "chips" }, d, m);
 }
 
@@ -641,17 +665,22 @@ function renderEditor(page) {
 
   const form = h("div", { class: "form" }, ...sectionsFor(current.content));
 
+  previewMode = "desktop";
   const iframe = h("iframe", { class: "preview__frame", title: "Vista previa" });
   const stage = h("div", { class: "preview__stage" }, iframe);
+  previewStage = stage;
   const preview = h(
     "div",
     { class: "preview" },
-    h("div", { class: "preview__bar" }, deviceButtons(stage), h("span", { class: "preview__hint" }, "Vista previa en vivo")),
+    h("div", { class: "preview__bar" }, deviceButtons(), h("span", { class: "preview__hint" }, "Vista previa en vivo")),
     stage
   );
 
   root().replaceChildren(top, h("div", { class: "ed-main" }, form, preview));
   initPreview(iframe);
+  if (previewRO) previewRO.disconnect();
+  previewRO = new ResizeObserver(() => applyPreviewSize());
+  previewRO.observe(stage);
 }
 
 /* ===================== descarga del proyecto (ZIP, sin deps) ============ */

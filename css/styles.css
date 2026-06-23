@@ -194,16 +194,16 @@ html.lenis body {
 .hero__media[hidden] {
   display: none;
 }
-/* degradado negro desde abajo para que el texto del hero se lea bien */
+/* degradado #25273A desde abajo para que el texto del hero se lea bien */
 .hero__gradient {
   position: absolute;
   inset: 0;
   z-index: 2;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0) 28%,
-    rgba(0, 0, 0, 0.5) 65%,
-    rgba(0, 0, 0, 0.92) 100%
+    rgba(37, 39, 58, 0) 28%,
+    rgba(37, 39, 58, 0.5) 65%,
+    rgba(37, 39, 58, 0.92) 100%
   );
   pointer-events: none;
 }
@@ -375,8 +375,9 @@ html.lenis body {
   gap: clamp(18px, 2vw, 26px);
 }
 @media (min-width: 760px) {
+  /* auto-fit: 1 columna => ancho completo; 2 => mitad y mitad. */
   .insights__grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 .insight__label,
@@ -386,11 +387,16 @@ html.lenis body {
 .insight__media {
   aspect-ratio: 578 / 505;
 }
+/* Si solo hay un insight, ocupa todo el ancho con un ratio ancho (como feature). */
+.insight:only-child .insight__media {
+  aspect-ratio: 1179 / 505;
+}
 .feature__media {
   aspect-ratio: 1179 / 505;
 }
 @media (max-width: 600px) {
-  .feature__media {
+  .feature__media,
+  .insight:only-child .insight__media {
     aspect-ratio: 4 / 3;
   }
 }
