@@ -256,13 +256,9 @@ function footer(c) {
   </footer>`;
 }
 
-/** Renderiza toda la página dentro de `root`. */
-export function render(root, c) {
-  if (c.meta) {
-    document.documentElement.lang = c.meta.lang || "en";
-    if (c.meta.title) document.title = c.meta.title;
-  }
-  root.innerHTML = [
+/** Devuelve el HTML de la página (sin tocar el documento). Reutilizable en el editor. */
+export function buildHTML(c) {
+  return [
     header(c),
     "<main>",
     hero(c),
@@ -274,6 +270,15 @@ export function render(root, c) {
     "</main>",
     footer(c),
   ].join("\n");
+}
+
+/** Renderiza toda la página dentro de `root`. */
+export function render(root, c) {
+  if (c.meta) {
+    document.documentElement.lang = c.meta.lang || "en";
+    if (c.meta.title) document.title = c.meta.title;
+  }
+  root.innerHTML = buildHTML(c);
 }
 
 export default render;

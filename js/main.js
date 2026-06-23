@@ -8,8 +8,23 @@ import { initLenis, initScrollAnimations, revealAll } from "./animations.js";
 
 const app = document.getElementById("app");
 
-function boot() {
-  render(app, content);
+/* Multipágina: ?page=<slug> carga pages/<slug>.json (publicado en el repo).
+   Sin parámetro, usa el contenido por defecto incluido en content.js. */
+async function loadPageContent() {
+  const slug = new URLSearchParams(location.search).get("page");
+  if (!slug) return content;
+  try {
+    const res = await fetch(`pages/${encodeURIComponent(slug)}.json`, { cache: "no-cache" });
+    if (res.ok) return await res.json();
+  } catch (e) {
+    /* fallback al contenido por defecto */
+  }
+  return content;
+}
+
+async function boot() {
+  const data = await loadPageContent();
+  render(app, data);
 
   if (!window.gsap || !window.ScrollTrigger) {
     revealAll();
