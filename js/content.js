@@ -133,11 +133,11 @@ export const content = {
     label: "Berango tenants",
     // Inquilinos identificados en el diseño. Sustituye `logo` por el SVG/PNG real.
     items: [
-      { name: "Worten", logo: "assets/tenants/worten.svg" },
-      { name: "Sport Zone", logo: "assets/tenants/sport-zone.svg" },
-      { name: "The Food Co.", logo: "assets/tenants/the-food-co.svg" },
-      { name: "C&A", logo: "assets/tenants/ca.svg" },
-      { name: "Kiabi", logo: "assets/tenants/kiabi.svg" },
+      { name: "Worten", logo: "assets/tenants/worten.png" },
+      { name: "Sport Zone", logo: "assets/tenants/sport-zone.png" },
+      { name: "The Food Co.", logo: "assets/tenants/the-food-co.png" },
+      { name: "C&A", logo: "assets/tenants/ca.png" },
+      { name: "Kiabi", logo: "assets/tenants/kiabi.png" },
     ],
   },
 
