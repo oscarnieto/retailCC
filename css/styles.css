@@ -194,15 +194,16 @@ html.lenis body {
 .hero__media[hidden] {
   display: none;
 }
-/* degradado del Figma: transparente hasta ~45% -> negro abajo */
+/* degradado negro desde abajo para que el texto del hero se lea bien */
 .hero__gradient {
   position: absolute;
   inset: 0;
   z-index: 2;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0) 45.5%,
-    rgba(0, 0, 0, 0.85) 100%
+    rgba(0, 0, 0, 0) 28%,
+    rgba(0, 0, 0, 0.5) 65%,
+    rgba(0, 0, 0, 0.92) 100%
   );
   pointer-events: none;
 }
@@ -246,12 +247,12 @@ html.lenis body {
 }
 
 /* =========================================================================
-   Media slots (los CUADROS ROJOS del Figma; foto/gráfica)
+   Media slots (huecos de foto/gráfica). Vacíos => placeholder blanco.
    ========================================================================= */
 .media {
   position: relative;
   overflow: hidden;
-  background: var(--red);
+  background: var(--paper);
 }
 .media__img {
   width: 100%;
@@ -265,13 +266,15 @@ html.lenis body {
   place-content: center;
   text-align: center;
   padding: 1.5rem;
+  background: var(--paper);
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 .media__ph span {
   font-size: clamp(11px, 1.2vw, 13px);
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.45);
 }
 
 /* =========================================================================

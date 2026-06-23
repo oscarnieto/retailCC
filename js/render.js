@@ -35,7 +35,7 @@ export function logoMarkup(variant = "yellow", brand = {}) {
   </span>`;
 }
 
-/** Hueco de media: foto/gráfica. Vacío => cuadro rojo (como el Figma). */
+/** Hueco de media: foto/gráfica. Vacío => placeholder blanco con su texto alt. */
 function mediaSlot(media = {}, { className = "", editPath = "" } = {}) {
   const hasImg = media.src && media.src.trim() !== "";
   const inner = hasImg
