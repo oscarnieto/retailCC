@@ -116,9 +116,12 @@ html.lenis body {
   aspect-ratio: 1;
   flex: none;
 }
-.logo svg {
+.logo svg,
+.logo img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  display: block;
 }
 .logo--yellow {
   --logo-bg: var(--yellow);

@@ -15,14 +15,22 @@ const rich = (parts = []) =>
   parts.map((p) => (p.bold ? `<b>${esc(p.text)}</b>` : esc(p.text))).join("");
 
 /* Logo "savills" como SVG editable (usa Montserrat de la página). */
-export function logoMarkup(variant = "yellow", title = "savills") {
+export function logoMarkup(variant = "yellow", brand = {}) {
+  const name = (brand && brand.name) || "savills";
+  const src = brand && brand.assets && brand.assets[variant];
+  if (src) {
+    return `<span class="logo logo--${variant}"><img src="${esc(src)}" alt="${esc(
+      name
+    )}" /></span>`;
+  }
+  // Fallback: wordmark en línea si todavía no hay archivo de logo.
   return `
-  <span class="logo logo--${variant}" role="img" aria-label="${esc(title)}">
+  <span class="logo logo--${variant}" role="img" aria-label="${esc(name)}">
     <svg viewBox="0 0 75 75" xmlns="http://www.w3.org/2000/svg">
       <rect width="75" height="75" rx="2" fill="var(--logo-bg)"/>
       <text x="37.5" y="46" text-anchor="middle"
             font-family="Montserrat, system-ui, sans-serif" font-weight="600"
-            font-size="17" letter-spacing="-0.5" fill="var(--logo-fg)">${esc(title)}</text>
+            font-size="17" letter-spacing="-0.5" fill="var(--logo-fg)">${esc(name)}</text>
     </svg>
   </span>`;
 }
@@ -60,7 +68,7 @@ function header(c) {
   <header class="site-header">
     <div class="container site-header__inner">
       <a href="${esc(c.brand.href)}" aria-label="${esc(c.brand.name)}">
-        ${logoMarkup("yellow", c.brand.name)}
+        ${logoMarkup("yellow", c.brand)}
       </a>
       <a href="${esc(c.nav.cta.href)}" class="btn" data-edit="nav.cta.label">${esc(
     c.nav.cta.label
@@ -230,7 +238,7 @@ function footer(c) {
       <div class="footer__top">
         <a href="${esc(c.brand.href)}" aria-label="${esc(c.brand.name)}">${logoMarkup(
     "black",
-    c.brand.name
+    c.brand
   )}</a>
         ${contacts}
         <p class="fees" data-reveal data-edit="footer.fees">${rich(f.fees)}</p>
