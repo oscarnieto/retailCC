@@ -443,26 +443,28 @@ html.lenis body {
   flex-direction: column;
 }
 .contact__name {
-  font-weight: 600;
-  font-size: clamp(15px, 1.5vw, 18px);
+  font-weight: 700;
+  font-size: clamp(16px, 1.6vw, 19px);
+  line-height: 1.12;
   text-transform: uppercase;
   letter-spacing: 0.01em;
-}
-.contact__line {
-  width: 76px;
-  height: 2px;
-  background: var(--black);
-  margin: 14px 0 16px;
+  margin-bottom: 4px;
 }
 .contact__role {
-  font-size: 14px;
-  line-height: 1.45;
+  font-weight: 600;
+  font-size: clamp(14px, 1.35vw, 16px);
+  line-height: 1.18;
   white-space: pre-line;
-  margin-bottom: 16px;
+}
+.contact__line {
+  width: 78px;
+  height: 3px;
+  background: var(--black);
+  margin: 13px 0 12px;
 }
 .contact__meta {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: clamp(14px, 1.35vw, 16px);
+  line-height: 1.25;
 }
 .contact__meta a {
   display: block;

@@ -145,13 +145,13 @@ export const content = {
   footer: {
     contacts: [
       {
-        name: "Salvador González",
+        name: "Salvador González.",
         role: "National Director Retail.\nCapital Markets. MRICS",
         phone: "+34 607 64 72 89",
         email: "salvador.gonzalez@savills.es",
       },
       {
-        name: "Ignacio Zamora",
+        name: "Ignacio Zamora.",
         role: "Associate Director Retail.\nCapital Markets. MRICS",
         phone: "+34 673 57 52 26",
         email: "ignacio.zamora@savills.es",
