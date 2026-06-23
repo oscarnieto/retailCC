@@ -8,7 +8,6 @@ mkdirSync(join(root, 'vendor'), { recursive: true });
 mkdirSync(join(root, 'fonts'), { recursive: true });
 
 const libs = [
-  ['three/build/three.module.min.js', 'vendor/three.module.min.js'],
   ['gsap/dist/gsap.min.js', 'vendor/gsap.min.js'],
   ['gsap/dist/ScrollTrigger.min.js', 'vendor/ScrollTrigger.min.js'],
   ['lenis/dist/lenis.min.js', 'vendor/lenis.min.js'],
