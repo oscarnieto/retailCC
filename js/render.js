@@ -191,23 +191,30 @@ function feature(c) {
 
 function tenants(c) {
   const t = c.tenants;
-  const items = t.items
-    .map(
-      (it, i) =>
-        `<span class="tenant" data-edit="tenants.items.${i}.name">${
-          it.logo
-            ? `<img src="${esc(it.logo)}" alt="${esc(it.name)}" loading="lazy" />`
-            : esc(it.name)
-        }</span>`
-    )
-    .join("");
+  // Cada item: logo en <img> y, si falla/está vacío, el nombre como texto.
+  const item = (it, i, dup) => {
+    const inner = it.logo
+      ? `<img class="tenant__logo" src="${esc(it.logo)}" alt="${esc(
+          it.name
+        )}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" /><span class="tenant__name" style="display:none">${esc(
+          it.name
+        )}</span>`
+      : `<span class="tenant__name">${esc(it.name)}</span>`;
+    return `<li class="tenant"${
+      dup ? ' aria-hidden="true"' : ` data-edit="tenants.items.${i}"`
+    }>${inner}</li>`;
+  };
+  // Set duplicado => bucle infinito sin costuras.
+  const set = (dup) => t.items.map((it, i) => item(it, i, dup)).join("");
   return `
   <section class="section tenants" id="tenants">
     <div class="container">
       <span class="label tenants__label" data-reveal data-edit="tenants.label">${esc(
         t.label
       )}</span>
-      <div class="tenants__row" data-reveal>${items}</div>
+      <div class="tenants__viewport" data-reveal>
+        <ul class="tenants__track">${set(false)}${set(true)}</ul>
+      </div>
     </div>
   </section>`;
 }

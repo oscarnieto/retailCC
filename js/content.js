@@ -93,7 +93,7 @@ export const content = {
     label: "Asset Overview",
     stats: [
       { value: "2017", caption: "Opening date" },
-      { value: "5,000sqm", caption: "GLA" },
+      { value: "5,000", unit: "sqm", caption: "GLA" },
       { value: "100%", caption: "Occupancy rate" },
       { value: "148", caption: "Parking spaces (outdoor/indoor)" },
       { value: "€11.78", unit: "/sqm/month", caption: "Average rent" },
@@ -133,11 +133,11 @@ export const content = {
     label: "Berango tenants",
     // Inquilinos identificados en el diseño. Sustituye `logo` por el SVG/PNG real.
     items: [
-      { name: "Worten", logo: "" },
-      { name: "Sport Zone", logo: "" },
-      { name: "The Food Co.", logo: "" },
-      { name: "C&A", logo: "" },
-      { name: "Kiabi", logo: "" },
+      { name: "Worten", logo: "assets/tenants/worten.svg" },
+      { name: "Sport Zone", logo: "assets/tenants/sport-zone.svg" },
+      { name: "The Food Co.", logo: "assets/tenants/the-food-co.svg" },
+      { name: "C&A", logo: "assets/tenants/ca.svg" },
+      { name: "Kiabi", logo: "assets/tenants/kiabi.svg" },
     ],
   },
 
