@@ -63,14 +63,17 @@ retailCC/
 ├── fonts/                  ← Fuentes .woff2 + fonts.css (auto-alojadas)
 ├── vendor/                 ← GSAP, ScrollTrigger, Lenis (librerías, sin CDN)
 │
+├── manifest.json           ← Lista de archivos del sitio (la usa "Descargar proyecto ZIP")
 ├── scripts/vendor.mjs      ← (Sólo desarrollo) copia libs/fuentes desde node_modules
+├── scripts/manifest.mjs    ← (Sólo desarrollo) regenera manifest.json
 ├── package.json            ← (Sólo desarrollo) dependencias para regenerar vendor/fonts
 └── package-lock.json
 ```
 
 > Para **funcionar en producción NO se necesitan** `package.json`, `package-lock.json`,
-> `node_modules/`, `scripts/` ni `.nojekyll`. Son sólo de desarrollo. Puedes
-> desplegar el resto de la carpeta tal cual.
+> `node_modules/`, `scripts/` ni `.nojekyll`. Son sólo de desarrollo. (Si quieres que
+> el botón **“Descargar proyecto (ZIP)”** funcione también desde el editor ya
+> desplegado, mantén `manifest.json` en el servidor.) Puedes desplegar el resto tal cual.
 
 ---
 
@@ -115,12 +118,18 @@ Permite cambiar **todo** el contenido, con **vista previa en vivo**:
 ### 4.1 Cómo se guardan y publican los cambios
 
 El editor es estático, así que **guarda en el `localStorage` del navegador** (borrador
-de trabajo). Para **publicar** en el servidor:
+de trabajo). Para llevarlo al servidor hay dos vías:
 
-- **Portada principal:** en el editor, botón **“Exportar content.js”** → reemplaza el
-  archivo `js/content.js` del servidor por el descargado.
-- **Otras páginas:** botón **“Exportar JSON”** → sube el archivo `<slug>.json` a la
-  carpeta `pages/` del servidor. Se verá en `…/index.html?page=<slug>`.
+- **Recomendada — “⬇ Descargar proyecto (ZIP)”:** genera **todo el sitio** (código,
+  imágenes y **tus ediciones ya incrustadas**) en un único `retailcc-site.zip` listo
+  para entregar a IT. La página más reciente se incrusta como portada (`js/content.js`)
+  y todas las páginas quedan como `pages/<slug>.json`.
+- **Avanzada — “Sólo JSON”:** exporta únicamente el `<slug>.json` de una página, por si
+  quieres actualizar una sola página en un sitio ya desplegado (se copia a `pages/`).
+
+> El botón ZIP usa `manifest.json` (lista de archivos del proyecto). Si IT añade o
+> quita archivos (p. ej. imágenes en `assets/`), hay que regenerarlo con
+> `npm run manifest` para que el ZIP los incluya.
 
 > Es decir: **el editor produce los archivos; publicarlos = copiarlos al servidor**
 > (por FTP, panel, pipeline… lo que use IT). Esto es deliberado: así nadie puede
@@ -269,17 +278,20 @@ npx serve .          # o: npx http-server -p 8080
 
 ## 7. Publicar cambios de contenido (flujo habitual)
 
+**Opción A — sitio completo (recomendada):**
 1. Entra en `…/editor/` y edita (se guarda solo en tu navegador).
-2. **Exporta**: `content.js` (portada) o `<slug>.json` (otras páginas).
-3. **Sube** ese archivo al servidor:
-   - `content.js` → reemplaza `js/content.js`.
-   - `<slug>.json` → cópialo a `pages/`.
+2. Pulsa **“⬇ Descargar proyecto (ZIP)”**.
+3. Entrega el `retailcc-site.zip` a IT (o descomprímelo sobre el directorio público).
 4. Recarga la web (Ctrl/Cmd + Shift + R si hay caché).
+
+**Opción B — sólo una página (avanzada):**
+1. En la página, pulsa **“Sólo JSON”** → descarga `<slug>.json`.
+2. Cópialo a `pages/` en el servidor. Se verá en `…/index.html?page=<slug>`.
 
 Las **imágenes** insertadas con “Insertar archivo” quedan **incrustadas** en el
 JSON/`content.js` (no requieren subir el archivo aparte). Para imágenes grandes (p.
 ej. el hero) es mejor subir el archivo a `assets/` y poner su ruta, para no inflar el
-JSON.
+JSON (y evitar el límite de ~5 MB del navegador).
 
 ---
 

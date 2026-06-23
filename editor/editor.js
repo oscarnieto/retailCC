@@ -162,18 +162,33 @@ function mdToSegments(str = "") {
 
 /* ============================ estado del editor ========================= */
 let current = null; // página en edición
+let previewFrame = null;
 let previewDoc = null;
 let saveStateEl = null;
-let updTimer = null;
+let prevTimer = null;
+let saveTimer = null;
 
 function scheduleUpdate() {
   if (saveStateEl) saveStateEl.textContent = "editando…";
-  clearTimeout(updTimer);
-  updTimer = setTimeout(() => {
+  // Preview y guardado van por separado: así un fallo de guardado (p. ej. cuota
+  // de localStorage por imágenes embebidas) NUNCA bloquea la vista previa.
+  clearTimeout(prevTimer);
+  prevTimer = setTimeout(refreshPreview, 180);
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveCurrent, 500);
+}
+
+function saveCurrent() {
+  try {
     upsertPage(current);
-    refreshPreview();
     if (saveStateEl) saveStateEl.textContent = "guardado ✓";
-  }, 300);
+  } catch (e) {
+    if (saveStateEl) saveStateEl.textContent = "⚠ no guardado";
+    toast(
+      "No se pudo guardar en el navegador (posible límite de ~5 MB por imágenes embebidas). " +
+        "Usa imágenes por ruta o descarga el proyecto para no perder cambios."
+    );
+  }
 }
 
 /* =============================== campos ================================= */
@@ -369,7 +384,7 @@ function sectionsFor(c) {
             { class: "row__grid" },
             textInput("Etiqueta", col.label, (v) => { col.label = v; scheduleUpdate(); }),
             textInput("URL del iframe (gráfica embebida)", col.embed || "", (v) => { col.embed = v; scheduleUpdate(); }, { placeholder: "https://… (Looker / Power BI / Sheets)" }),
-            imageField("…o una imagen", col.media, "src", { hint: "Si no pones iframe ni imagen, se muestra un recuadro rojo (placeholder)." })
+            imageField("…o una imagen", col.media, "src", { hint: "Si no pones iframe ni imagen, se muestra un placeholder blanco." })
           )
         );
       },
@@ -438,22 +453,48 @@ function sectionsFor(c) {
 }
 
 /* ============================== preview ================================= */
-function initPreview(iframe) {
-  iframe.addEventListener("load", () => {
-    previewDoc = iframe.contentDocument;
-    refreshPreview();
-  });
-  iframe.srcdoc =
+function previewShell() {
+  const base = new URL("../", location.href).href; // raíz del sitio (absoluta y fiable en srcdoc)
+  return (
     '<!doctype html><html><head><meta charset="utf-8">' +
-    '<base href="../"><link rel="stylesheet" href="css/styles.css">' +
+    '<base href="' + base + '">' +
+    '<link rel="stylesheet" href="' + base + 'css/styles.css">' +
     "<style>body{overflow-x:hidden}[data-reveal]{opacity:1!important;transform:none!important}" +
     ".tenants__track{animation:none!important}.site-header{position:absolute}</style>" +
-    '</head><body><div id="app"></div></body></html>';
+    '</head><body><div id="app"></div></body></html>'
+  );
+}
+function initPreview(iframe) {
+  previewFrame = iframe;
+  previewDoc = null;
+  const setup = () => {
+    const doc = iframe.contentDocument;
+    if (!doc) return false;
+    doc.open();
+    doc.write(previewShell());
+    doc.close();
+    previewDoc = doc;
+    refreshPreview();
+    return true;
+  };
+  // El documento (about:blank) de un iframe ya insertado suele estar disponible
+  // al instante; si no, lo resolvemos en 'load' y, de respaldo, en el próximo tick.
+  iframe.addEventListener("load", () => { if (!previewDoc) setup(); });
+  if (!setup()) setTimeout(setup, 0);
 }
 function refreshPreview() {
-  if (!previewDoc) return;
-  const app = previewDoc.getElementById("app");
-  if (app) app.innerHTML = buildHTML(current.content);
+  const doc = previewDoc || (previewFrame && previewFrame.contentDocument);
+  const app = doc && doc.getElementById("app");
+  if (!app) return;
+  previewDoc = doc;
+  try {
+    app.innerHTML = buildHTML(current.content);
+  } catch (e) {
+    app.innerHTML =
+      '<p style="padding:2rem;font:14px sans-serif;color:#a00">Error al previsualizar: ' +
+      (e && e.message) +
+      "</p>";
+  }
 }
 
 /* =============================== vistas ================================= */
@@ -541,14 +582,16 @@ function renderDashboard() {
       {},
       h("button", { class: "btn btn--ghost", onclick: importPage }, "Importar JSON"),
       h("button", { class: "btn btn--primary", onclick: () => { const name = prompt("Nombre de la nueva página:", "Nueva página"); if (name != null) { const p = newPage(name.trim() || "Nueva página"); location.hash = "/edit/" + p.id; } } }, "+ Nueva página"),
+      h("button", { class: "btn", onclick: () => downloadProjectZip((listPages()[0] || {}).id), title: "Descarga TODO el sitio (con tus ediciones) listo para entregar a IT" }, "⬇ Descargar proyecto (ZIP)"),
       h("button", { class: "btn btn--ghost", onclick: logout }, "Salir")
     )
   );
   const grid = h("div", { class: "dash-grid" }, ...listPages().map(pageCard));
   const help = h("div", { class: "dash-help", html:
-    "<strong>Cómo publicar:</strong> los cambios se guardan en este navegador. Para publicarlos en el servidor, " +
-    'pulsa <em>Exportar</em> en una página y sube el archivo <code>&lt;slug&gt;.json</code> a la carpeta <code>pages/</code> del proyecto. ' +
-    "La web mostrará esa página en <code>?page=&lt;slug&gt;</code>. Para la portada principal, usa <em>Exportar content.js</em> dentro del editor y reemplaza <code>js/content.js</code>. " +
+    "<strong>Cómo entregar el sitio a IT:</strong> pulsa <em>⬇ Descargar proyecto (ZIP)</em>. Genera TODO el sitio " +
+    "(código, imágenes y tus ediciones incrustadas) en un único archivo listo para subir al servidor. " +
+    "La página más reciente se usa como portada; el resto quedan accesibles en <code>?page=&lt;slug&gt;</code>.<br>" +
+    "<strong>Sólo contenido (avanzado):</strong> <em>Sólo JSON</em> dentro de una página exporta su <code>&lt;slug&gt;.json</code>. " +
     "Consulta <code>DOCUMENTACION.md</code> para el despliegue completo." });
   root().replaceChildren(top, h("main", { class: "dash" }, h("h1", {}, "Páginas"), grid, help));
 }
@@ -580,8 +623,6 @@ function renderEditor(page) {
 
   const exportJSON = () =>
     download(current.slug + ".json", JSON.stringify(current.content, null, 2));
-  const exportContentJS = () =>
-    download("content.js", "export default " + JSON.stringify(current.content, null, 2) + ";\n", "text/javascript");
 
   const top = h(
     "header",
@@ -592,8 +633,8 @@ function renderEditor(page) {
     h(
       "div",
       { class: "ed-top__actions" },
-      h("button", { class: "btn btn--primary", onclick: exportJSON }, "Exportar JSON"),
-      h("button", { class: "btn", onclick: exportContentJS, title: "Para la portada principal: reemplaza js/content.js" }, "Exportar content.js"),
+      h("button", { class: "btn btn--primary", onclick: () => downloadProjectZip(current.id), title: "Descarga TODO el sitio (con tus ediciones) listo para entregar a IT" }, "⬇ Descargar proyecto (ZIP)"),
+      h("button", { class: "btn btn--ghost", onclick: exportJSON, title: "Sólo el contenido de esta página en JSON (uso avanzado)" }, "Sólo JSON"),
       h("button", { class: "btn btn--ghost", onclick: logout }, "Salir")
     )
   );
@@ -611,6 +652,103 @@ function renderEditor(page) {
 
   root().replaceChildren(top, h("div", { class: "ed-main" }, form, preview));
   initPreview(iframe);
+}
+
+/* ===================== descarga del proyecto (ZIP, sin deps) ============ */
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+const crc32 = (b) => {
+  let c = 0xffffffff;
+  for (let i = 0; i < b.length; i++) c = CRC_TABLE[(c ^ b[i]) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+};
+const _u16 = (n) => new Uint8Array([n & 255, (n >>> 8) & 255]);
+const _u32 = (n) => new Uint8Array([n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255]);
+function _cat(parts) {
+  let len = 0;
+  for (const p of parts) len += p.length;
+  const o = new Uint8Array(len);
+  let x = 0;
+  for (const p of parts) { o.set(p, x); x += p.length; }
+  return o;
+}
+/** Construye un ZIP (método "store", sin compresión) a partir de [{name, bytes}]. */
+function buildZip(files) {
+  const enc = new TextEncoder();
+  const chunks = [];
+  const central = [];
+  let offset = 0;
+  for (const f of files) {
+    const nb = enc.encode(f.name);
+    const crc = crc32(f.bytes);
+    const sz = f.bytes.length;
+    const lfh = _cat([_u32(0x04034b50), _u16(20), _u16(0), _u16(0), _u16(0), _u16(0), _u32(crc), _u32(sz), _u32(sz), _u16(nb.length), _u16(0), nb, f.bytes]);
+    chunks.push(lfh);
+    central.push(_cat([_u32(0x02014b50), _u16(20), _u16(20), _u16(0), _u16(0), _u16(0), _u16(0), _u32(crc), _u32(sz), _u32(sz), _u16(nb.length), _u16(0), _u16(0), _u16(0), _u16(0), _u32(0), _u32(offset), nb]));
+    offset += lfh.length;
+  }
+  const cdStart = offset;
+  let cdSize = 0;
+  for (const c of central) { chunks.push(c); cdSize += c.length; }
+  chunks.push(_cat([_u32(0x06054b50), _u16(0), _u16(0), _u16(central.length), _u16(central.length), _u32(cdSize), _u32(cdStart), _u16(0)]));
+  return new Blob(chunks, { type: "application/zip" });
+}
+const strBytes = (s) => new TextEncoder().encode(s);
+
+/**
+ * Descarga TODO el proyecto en un ZIP, con el contenido editado incrustado:
+ * la página `homeId` se incrusta como `js/content.js` (portada) y todas las
+ * páginas se incluyen como `pages/<slug>.json`. El resto de archivos se toman
+ * del servidor según `manifest.json`.
+ */
+async function downloadProjectZip(homeId) {
+  toast("Preparando el ZIP del proyecto…");
+  let manifest;
+  try {
+    const res = await fetch(new URL("../manifest.json", location.href).href, { cache: "no-cache" });
+    if (!res.ok) throw 0;
+    manifest = await res.json();
+  } catch {
+    toast("No encuentro manifest.json. Sirve el proyecto por HTTP (no file://) y reintenta.");
+    return;
+  }
+  const base = new URL("../", location.href).href;
+  const pages = listPages();
+  const home = getPage(homeId) || pages[0];
+  const overridden = new Set(["js/content.js"]);
+  pages.forEach((p) => overridden.add("pages/" + p.slug + ".json"));
+
+  const files = [];
+  for (const path of manifest.files || []) {
+    if (overridden.has(path)) continue; // lo generamos con el contenido editado
+    try {
+      const r = await fetch(base + path, { cache: "no-cache" });
+      if (!r.ok) continue;
+      files.push({ name: path, bytes: new Uint8Array(await r.arrayBuffer()) });
+    } catch {
+      /* omitir archivo no disponible */
+    }
+  }
+  if (home)
+    files.push({ name: "js/content.js", bytes: strBytes("export default " + JSON.stringify(home.content, null, 2) + ";\n") });
+  for (const p of pages)
+    files.push({ name: "pages/" + p.slug + ".json", bytes: strBytes(JSON.stringify(p.content, null, 2)) });
+
+  const blob = buildZip(files);
+  const url = URL.createObjectURL(blob);
+  const a = h("a", { href: url, download: "retailcc-site.zip" });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  toast("ZIP generado con " + files.length + " archivos. Entrégalo a IT para desplegar.");
 }
 
 /* =============================== router ================================= */

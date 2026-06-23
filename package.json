@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "vendor": "node scripts/vendor.mjs",
+    "manifest": "node scripts/manifest.mjs",
     "start": "python3 -m http.server 4321",
     "dev": "python3 -m http.server 4321"
   },
