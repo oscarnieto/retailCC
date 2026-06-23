@@ -244,7 +244,7 @@ function footer(c) {
     <div class="container">
       <div class="footer__top">
         <a href="${esc(c.brand.href)}" aria-label="${esc(c.brand.name)}">${logoMarkup(
-    "black",
+    "yellow",
     c.brand
   )}</a>
         ${contacts}

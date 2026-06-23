@@ -470,11 +470,11 @@ html.lenis body {
 }
 
 /* =========================================================================
-   FOOTER (amarillo, a sangre)
+   FOOTER (#25273A, texto blanco, a sangre)
    ========================================================================= */
 .site-footer {
-  background: var(--yellow);
-  color: var(--black);
+  background: #25273a;
+  color: #ffffff;
   padding-block: clamp(40px, 4.5vw, 54px) clamp(24px, 3vw, 30px);
 }
 .footer__top {
@@ -514,7 +514,7 @@ html.lenis body {
 .contact__line {
   width: 78px;
   height: 3px;
-  background: var(--black);
+  background: #ffffff;
   margin: 13px 0 12px;
 }
 .contact__meta {
@@ -549,20 +549,20 @@ html.lenis body {
   top: 4px;
   bottom: 4px;
   width: 2px;
-  background: var(--black);
+  background: #ffffff;
 }
 .fees b {
   font-weight: 700;
 }
 .footer__line {
   height: 1px;
-  background: var(--black);
+  background: rgba(255, 255, 255, 0.25);
   margin-block: clamp(28px, 3.4vw, 40px) clamp(14px, 1.6vw, 19px);
 }
 .footer__disclaimer {
   font-size: 12px;
   line-height: 1.5;
-  color: var(--black);
+  color: #ffffff;
   max-width: 1180px;
 }
 
