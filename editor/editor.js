@@ -65,6 +65,11 @@ const readFileAsDataURL = (file) =>
     r.readAsDataURL(file);
   });
 
+/* El editor vive en /editor/, así que una ruta del repo ("assets/…") hay que
+   resolverla contra la raíz del sitio ("../") para verla aquí (miniaturas). */
+const resolveAsset = (v) =>
+  !v || /^(data:|https?:|\/)/i.test(v) ? v : "../" + v;
+
 let toastTimer;
 function toast(msg) {
   document.querySelector(".toast")?.remove();
@@ -245,7 +250,7 @@ function imageField(label, obj, key, opts = {}) {
   });
   const paint = () => {
     thumb.innerHTML = "";
-    if (obj[key]) thumb.append(h("img", { src: obj[key], alt: "" }));
+    if (obj[key]) thumb.append(h("img", { src: resolveAsset(obj[key]), alt: "" }));
     else thumb.append(h("span", { class: "imgfld__empty" }, opts.emptyLabel || "sin imagen"));
   };
   paint();
@@ -464,7 +469,9 @@ function previewShell() {
     '<base href="' + base + '">' +
     '<link rel="stylesheet" href="' + base + 'css/styles.css">' +
     "<style>body{overflow-x:hidden}[data-reveal]{opacity:1!important;transform:none!important}" +
-    ".tenants__track{animation:none!important}.site-header{position:absolute}</style>" +
+    ".tenants__track{animation:none!important}.site-header{position:absolute}" +
+    /* en la preview el hero no ocupa toda la pantalla, para ver el contenido */
+    ".hero{min-height:60vh}</style>" +
     '</head><body><div id="app"></div></body></html>'
   );
 }
