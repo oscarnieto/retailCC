@@ -292,13 +292,20 @@ function rowTools(i, items, rerender) {
   );
 }
 
-function listEditor(items, addLabel, makeRow, onAdd) {
+function listEditor(items, addLabel, makeRow, onAdd, extraAdds = []) {
   const box = h("div", { class: "list" });
+  const adds = [{ label: addLabel, onAdd }, ...extraAdds];
   const rerender = () => {
     box.innerHTML = "";
     items.forEach((it, i) => box.append(makeRow(it, i, items, rerender)));
     box.append(
-      h("button", { class: "btn btn--add", type: "button", onclick: () => { onAdd(); rerender(); scheduleUpdate(); } }, "+ " + addLabel)
+      h(
+        "div",
+        { class: "list__adds" },
+        ...adds.map((a) =>
+          h("button", { class: "btn btn--add", type: "button", onclick: () => { a.onAdd(); rerender(); scheduleUpdate(); } }, "+ " + a.label)
+        )
+      )
     );
   };
   rerender();
@@ -380,6 +387,13 @@ function sectionsFor(c) {
       "Añadir columna",
       (col, i, items, rer) => {
         col.media = col.media || { src: "", alt: "" };
+        const label = () => (col.full ? "↔ Fila (ancho completo)" : "▭ Columna (media anchura)");
+        const toggle = h(
+          "button",
+          { class: "btn btn--ghost btn--wide", type: "button", title: "Cambiar entre columna y fila a ancho completo",
+            onclick: () => { col.full = !col.full; toggle.textContent = label(); scheduleUpdate(); } },
+          label()
+        );
         return h(
           "div",
           { class: "row" },
@@ -387,13 +401,15 @@ function sectionsFor(c) {
           h(
             "div",
             { class: "row__grid" },
+            toggle,
             textInput("Etiqueta", col.label, (v) => { col.label = v; scheduleUpdate(); }),
             textInput("URL del iframe (gráfica embebida)", col.embed || "", (v) => { col.embed = v; scheduleUpdate(); }, { placeholder: "https://… (Looker / Power BI / Sheets)" }),
             imageField("…o una imagen", col.media, "src", { hint: "Si no pones iframe ni imagen, se muestra un placeholder blanco." })
           )
         );
       },
-      () => c.insights.columns.push({ label: "Nueva columna", embed: "", media: { src: "", alt: "" } })
+      () => c.insights.columns.push({ label: "Nueva columna", embed: "", media: { src: "", alt: "" } }),
+      [{ label: "Añadir fila (ancho completo)", onAdd: () => c.insights.columns.push({ label: "Nueva fila", embed: "", media: { src: "", alt: "" }, full: true }) }]
     )
   );
 

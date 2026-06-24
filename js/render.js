@@ -162,7 +162,7 @@ function insights(c) {
             editPath: `insights.columns.${i}.media`,
           });
       return `
-      <div class="insight" data-reveal>
+      <div class="insight${col.full ? " insight--full" : ""}" data-reveal>
         <span class="label insight__label" data-edit="insights.columns.${i}.label">${esc(
         col.label
       )}</span>

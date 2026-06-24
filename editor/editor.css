@@ -55,6 +55,9 @@ a { color: var(--accent); }
 .btn--primary:hover, .btn--add:hover { background: #3f7df0; }
 .btn--ghost { background: transparent; }
 .btn--add { width: 100%; justify-content: center; margin-top: 0.5rem; }
+.btn--wide { width: 100%; justify-content: center; }
+.list__adds { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.list__adds .btn--add { width: auto; flex: 1 1 160px; margin-top: 0; }
 .btn--danger { color: var(--danger); border-color: #4a2a2f; }
 .btn--danger:hover { background: #2a1a1d; }
 .chip {

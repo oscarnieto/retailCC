@@ -375,9 +375,13 @@ html.lenis body {
   gap: clamp(18px, 2vw, 26px);
 }
 @media (min-width: 760px) {
-  /* auto-fit: 1 columna => ancho completo; 2 => mitad y mitad. */
   .insights__grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Una sola columna, o una marcada como "fila", ocupan el ancho completo. */
+  .insight--full,
+  .insight:only-child {
+    grid-column: 1 / -1;
   }
 }
 .insight__label,
@@ -387,7 +391,8 @@ html.lenis body {
 .insight__media {
   aspect-ratio: 578 / 505;
 }
-/* Si solo hay un insight, ocupa todo el ancho con un ratio ancho (como feature). */
+/* Ancho completo => ratio apaisado (como feature). */
+.insight--full .insight__media,
 .insight:only-child .insight__media {
   aspect-ratio: 1179 / 505;
 }
@@ -396,6 +401,7 @@ html.lenis body {
 }
 @media (max-width: 600px) {
   .feature__media,
+  .insight--full .insight__media,
   .insight:only-child .insight__media {
     aspect-ratio: 4 / 3;
   }
