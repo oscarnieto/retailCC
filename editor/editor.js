@@ -465,13 +465,14 @@ function sectionsFor(c) {
 function previewShell() {
   const base = new URL("../", location.href).href; // raíz del sitio (absoluta y fiable en srcdoc)
   return (
-    '<!doctype html><html><head><meta charset="utf-8">' +
+    '<!doctype html><html class="reduced"><head><meta charset="utf-8">' +
     '<base href="' + base + '">' +
     '<link rel="stylesheet" href="' + base + 'css/styles.css">' +
-    "<style>body{overflow-x:hidden}[data-reveal]{opacity:1!important;transform:none!important}" +
+    "<style>html{background:#fff}body{overflow-x:hidden}" +
+    "[data-reveal]{opacity:1!important;transform:none!important}" +
     ".tenants__track{animation:none!important}.site-header{position:absolute}" +
     /* en la preview el hero no ocupa toda la pantalla, para ver el contenido */
-    ".hero{min-height:60vh}</style>" +
+    "#app .hero{min-height:60vh!important;height:auto!important}</style>" +
     '</head><body><div id="app"></div></body></html>'
   );
 }
@@ -501,6 +502,10 @@ function refreshPreview() {
   previewDoc = doc;
   try {
     app.innerHTML = buildHTML(current.content);
+    // Cap del hero a prueba de cascada: estilo en línea sobre el elemento gana
+    // siempre sobre styles.css (que no usa !important en min-height).
+    const hero = app.querySelector(".hero");
+    if (hero) hero.style.minHeight = "60vh";
   } catch (e) {
     app.innerHTML =
       '<p style="padding:2rem;font:14px sans-serif;color:#a00">Error al previsualizar: ' +
