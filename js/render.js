@@ -227,7 +227,6 @@ function footer(c) {
       <div class="contact" data-reveal data-edit="footer.contacts.${i}">
         <span class="contact__name" data-edit="footer.contacts.${i}.name">${esc(p.name)}</span>
         <span class="contact__role" data-edit="footer.contacts.${i}.role">${esc(p.role)}</span>
-        <span class="contact__line"></span>
         <span class="contact__meta">
           <a href="tel:${esc(p.phone.replace(/\s+/g, ""))}" data-edit="footer.contacts.${i}.phone">${esc(
         p.phone
