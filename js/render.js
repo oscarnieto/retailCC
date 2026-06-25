@@ -204,8 +204,10 @@ function tenants(c) {
       dup ? ' aria-hidden="true"' : ` data-edit="tenants.items.${i}"`
     }>${inner}</li>`;
   };
-  // Set duplicado => bucle infinito sin costuras.
+  // 4 copias => bucle infinito sin costuras NI hueco a la derecha aunque haya
+  // pocos logos. Debe coincidir con el -25% del keyframe `tenants-marquee`.
   const set = (dup) => t.items.map((it, i) => item(it, i, dup)).join("");
+  const track = set(false) + set(true) + set(true) + set(true);
   return `
   <section class="section tenants" id="tenants">
     <div class="container">
@@ -213,7 +215,7 @@ function tenants(c) {
         t.label
       )}</span>
       <div class="tenants__viewport" data-reveal>
-        <ul class="tenants__track">${set(false)}${set(true)}</ul>
+        <ul class="tenants__track">${track}</ul>
       </div>
     </div>
   </section>`;

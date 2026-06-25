@@ -461,7 +461,7 @@ html.lenis body {
 }
 @keyframes tenants-marquee {
   from {
-    transform: translateX(-50%);
+    transform: translateX(-25%); /* una de las 4 copias del track => bucle sin salto */
   }
   to {
     transform: translateX(0);
