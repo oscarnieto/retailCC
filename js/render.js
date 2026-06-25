@@ -90,10 +90,10 @@ function hero(c) {
     ${media}
     <div class="hero__gradient" aria-hidden="true"></div>
     <div class="hero__inner container">
-      <p class="hero__eyebrow" data-reveal data-edit="hero.eyebrow">${esc(h.eyebrow)}</p>
-      <h1 class="hero__title" data-reveal data-edit="hero.title">${esc(h.title)}</h1>
-      <p class="hero__place" data-reveal data-edit="hero.place">${esc(h.place)}</p>
-      <p class="hero__subtitle" data-reveal data-edit="hero.subtitle">${esc(h.subtitle)}</p>
+      <p class="hero__eyebrow" data-edit="hero.eyebrow">${esc(h.eyebrow)}</p>
+      <h1 class="hero__title" data-edit="hero.title">${esc(h.title)}</h1>
+      <p class="hero__place" data-edit="hero.place">${esc(h.place)}</p>
+      <p class="hero__subtitle" data-edit="hero.subtitle">${esc(h.subtitle)}</p>
     </div>
   </section>`;
 }
