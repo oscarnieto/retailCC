@@ -440,9 +440,6 @@ html.lenis body {
   animation: tenants-marquee 35s linear infinite;
   will-change: transform;
 }
-.tenants__viewport:hover .tenants__track {
-  animation-play-state: paused;
-}
 .tenant {
   flex: none;
   display: inline-flex;
